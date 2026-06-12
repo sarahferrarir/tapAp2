@@ -369,16 +369,19 @@ Através do Swagger é possível:
 * Realizar testes diretamente pelo navegador
 
 ---
-
 # Deploy em Nuvem
 
-Como requisito bônus da atividade, a API pode ser disponibilizada em ambiente de nuvem utilizando a plataforma Render.
+A aplicação foi disponibilizada em ambiente de nuvem utilizando a plataforma Render, permitindo que a API seja acessada e testada publicamente sem necessidade de execução local.
 
 Infraestrutura utilizada:
 
 * Aplicação Spring Boot hospedada no Render
-* Banco MySQL hospedado no Clever Cloud
-* Comunicação realizada via JDBC
+* Banco de dados MySQL hospedado no Clever Cloud
+* Comunicação entre aplicação e banco realizada via JDBC
+
+O link público da aplicação encontra-se na seção **About** deste repositório no GitHub.
+
+Através desse link é possível acessar a API em produção e sua documentação Swagger/OpenAPI.
 
 ---
 
