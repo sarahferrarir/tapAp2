@@ -25,6 +25,7 @@ A aplicação foi desenvolvida seguindo os requisitos da disciplina de Técnicas
 * JDBC para acesso ao banco
 * Aplicação de Design Patterns
 * Relacionamentos 1:N e N:M
+* Deploy em nuvem
 
 ---
 
@@ -38,12 +39,13 @@ A aplicação foi desenvolvida seguindo os requisitos da disciplina de Técnicas
 * IntelliJ IDEA
 * Maven
 * Clever Cloud (Banco de Dados em Nuvem)
+* Render (Hospedagem da API)
 
 ---
 
 # Modelo de Domínio
 
-O sistema é composto por três entidades principais:
+O sistema é composto por três entidades principais.
 
 ## Categoria
 
@@ -153,8 +155,6 @@ Monitor Dell
 * Dell Brasil
 * Kabum
 
-````
-
 ---
 
 # Estrutura do Banco de Dados
@@ -166,7 +166,7 @@ categorias
 produtos
 fornecedores
 produto_fornecedor
-````
+```
 
 Relacionamentos:
 
@@ -179,7 +179,7 @@ produtos (N) -------- (N) fornecedores
        produto_fornecedor
 ```
 
-O banco de dados está hospedado na plataforma Clever Cloud.
+O banco de dados MySQL está hospedado na plataforma Clever Cloud e é acessado pela aplicação através de JDBC.
 
 ---
 
@@ -210,7 +210,7 @@ Exemplos:
 
 ## DAO
 
-Responsável pelo acesso ao banco de dados através de JDBC.
+Responsável pelo acesso ao banco de dados utilizando JDBC.
 
 Exemplos:
 
@@ -234,6 +234,26 @@ Exemplos:
 
 ---
 
+## Config
+
+Configurações da aplicação.
+
+Exemplo:
+
+* Conexao
+
+---
+
+## Factory
+
+Responsável pela criação centralizada dos DAOs.
+
+Exemplo:
+
+* DaoFactory
+
+---
+
 # Design Patterns Aplicados
 
 ## 1. Singleton
@@ -250,7 +270,7 @@ Garantir uma única instância de conexão com o banco de dados durante a execu�
 
 Benefícios:
 
-* Redução de abertura de conexões
+* Redução da criação de conexões
 * Centralização do acesso ao banco
 * Menor consumo de recursos
 
@@ -291,7 +311,7 @@ Durante o desenvolvimento foram aplicados conceitos de:
 * Nomes descritivos
 * Métodos pequenos
 * Separação de responsabilidades
-* Código organizado em camadas
+* Organização em camadas
 
 ## SOLID
 
@@ -307,7 +327,7 @@ Exemplo:
 
 ### Open/Closed Principle (OCP)
 
-A utilização da Factory permite adicionar novos DAOs sem modificar a estrutura principal da aplicação.
+A utilização da Factory permite adicionar novos DAOs sem alterar a estrutura principal da aplicação.
 
 ---
 
@@ -315,18 +335,49 @@ A utilização da Factory permite adicionar novos DAOs sem modificar a estrutura
 
 A API possui documentação automática utilizando Swagger/OpenAPI.
 
-Após iniciar a aplicação:
+Ambiente local:
 
 ```text
 http://localhost:8080/swagger-ui/index.html
 ```
 
-É possível:
+Ambiente em produção:
+
+```text
+https://tap-ap2-b5iy.onrender.com/swagger-ui/index.html
+```
+
+Através do Swagger é possível:
 
 * Visualizar endpoints
 * Testar requisições
 * Enviar parâmetros
 * Consultar respostas
+* Validar o funcionamento da API sem ferramentas externas
+
+---
+
+# Deploy em Nuvem
+
+Como requisito bônus da atividade, a API foi disponibilizada em ambiente de nuvem utilizando a plataforma Render.
+
+Infraestrutura utilizada:
+
+* Aplicação Spring Boot hospedada no Render
+* Banco de dados MySQL hospedado no Clever Cloud
+* Comunicação entre aplicação e banco realizada via JDBC
+
+URL da aplicação:
+
+```text
+https://tap-ap2-b5iy.onrender.com
+```
+
+Swagger em produção:
+
+```text
+https://tap-ap2-b5iy.onrender.com/swagger-ui/index.html
+```
 
 ---
 
@@ -381,17 +432,29 @@ DELETE /api/produto-fornecedor/{produtoId}/{fornecedorId}
 
 # Como Executar
 
-1. Clonar o repositório
+### 1. Clonar o repositório
 
-2. Configurar as credenciais do banco na classe de conexão
+```bash
+git clone <url-do-repositorio>
+```
 
-3. Executar a aplicação Spring Boot
+### 2. Configurar as credenciais do banco
+
+Atualizar as informações de conexão na classe:
+
+```text
+Conexao.java
+```
+
+### 3. Executar a aplicação
+
+Executar a classe:
 
 ```text
 TapAp2Application.java
 ```
 
-4. Acessar o Swagger
+### 4. Acessar o Swagger
 
 ```text
 http://localhost:8080/swagger-ui/index.html
