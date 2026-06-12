@@ -1,4 +1,4 @@
-# API REST CRUD - Sistema de Gestão de Produtos, Categorias e Fornecedores
+# API REST CRUD - Sistema de Gestão da Copa do Mundo de Futebol
 
 **Instituição:** IBMEC
 
@@ -14,17 +14,21 @@
 
 # Sobre o Projeto
 
-Este projeto consiste no desenvolvimento de uma API REST CRUD utilizando Java e Spring Boot para gerenciamento de produtos, categorias e fornecedores.
+Este projeto consiste no desenvolvimento de uma API REST CRUD utilizando Java e Spring Boot para gerenciamento de informações relacionadas à Copa do Mundo de Futebol.
 
-A aplicação foi desenvolvida seguindo os requisitos da disciplina de Técnicas Avançadas de Programação, incluindo:
+A aplicação foi desenvolvida com base no minimundo proposto na avaliação final da disciplina, permitindo o gerenciamento de seleções, jogadores e partidas da competição.
+
+O sistema contempla:
 
 * API REST CRUD
 * Banco de dados relacional
 * Spring Boot
 * Swagger/OpenAPI
-* JDBC para acesso ao banco
+* JDBC para acesso aos dados
+* Relacionamentos 1:N e N:N
 * Aplicação de Design Patterns
-* Relacionamentos 1:N e N:M
+* Aplicação de princípios SOLID
+* Aplicação de boas práticas de Clean Code
 * Deploy em nuvem
 
 ---
@@ -35,9 +39,9 @@ A aplicação foi desenvolvida seguindo os requisitos da disciplina de Técnicas
 * Spring Boot 3+
 * JDBC
 * MySQL
+* Maven
 * Swagger / OpenAPI
 * IntelliJ IDEA
-* Maven
 * Clever Cloud (Banco de Dados em Nuvem)
 * Render (Hospedagem da API)
 
@@ -47,58 +51,62 @@ A aplicação foi desenvolvida seguindo os requisitos da disciplina de Técnicas
 
 O sistema é composto por três entidades principais.
 
-## Categoria
+## Seleção
 
-Representa a categoria de um produto.
+Representa uma seleção participante da Copa do Mundo.
 
-Exemplos:
+### Exemplos
 
-* Informática
-* Periféricos
-* Armazenamento
+* Brasil
+* Argentina
+* França
 
 ### Atributos
 
 * id
-* nome
-* descricao
+* nomePais
+* tecnico
+* rankingFifa
 
 ---
 
-## Produto
+## Jogador
 
-Representa um produto comercializado.
+Representa um atleta pertencente a uma seleção.
 
-Exemplos:
+### Exemplos
 
-* Notebook Dell Inspiron
-* Mouse Logitech G203
-* SSD Samsung 1TB
+* Vinicius Junior
+* Lionel Messi
+* Kylian Mbappé
 
 ### Atributos
 
 * id
 * nome
-* preco
-* categoriaId
+* numeroCamisa
+* posicao
+* idade
+* selecaoId
 
 ---
 
-## Fornecedor
+## Partida
 
-Representa uma empresa fornecedora de produtos.
+Representa uma partida disputada durante a competição.
 
-Exemplos:
+### Exemplos
 
-* Dell Brasil
-* Kabum
-* Samsung
+* Brasil x Argentina
+* França x Alemanha
 
 ### Atributos
 
 * id
-* nome
-* email
+* dataPartida
+* estadio
+* faseCompeticao
+* placar
 
 ---
 
@@ -106,54 +114,60 @@ Exemplos:
 
 ## Relacionamento 1:N
 
-### Categoria → Produto
+### Seleção → Jogador
 
-Uma categoria pode possuir vários produtos.
+Uma seleção pode possuir vários jogadores.
 
-Exemplo:
+Um jogador pertence a apenas uma seleção.
 
-Categoria Informática
+### Exemplo
 
-* Notebook Dell
-* Computador Gamer
-* Teclado Mecânico
+Brasil
 
-Já um produto pertence a apenas uma categoria.
+* Vinicius Junior
+* Bruno Guimarães
+* Marquinhos
+
+Argentina
+
+* Messi
+* Julián Álvarez
+* Enzo Fernández
 
 ---
 
-## Relacionamento N:M
+## Relacionamento N:N
 
-### Produto ↔ Fornecedor
+### Partida ↔ Seleção
 
-Um produto pode possuir vários fornecedores.
+Uma partida envolve duas seleções.
 
-Um fornecedor pode fornecer vários produtos.
+Uma seleção pode participar de várias partidas ao longo da competição.
 
 Esse relacionamento foi implementado através da tabela associativa:
 
 ```text
-produto_fornecedor
+partida_selecao
 ```
 
 Campos:
 
 ```text
-produto_id
-fornecedor_id
+partida_id
+selecao_id
 ```
 
-Exemplo:
+### Exemplo
 
-Notebook Dell
+Partida Brasil x Argentina
 
-* Dell Brasil
-* Kabum
+* Brasil
+* Argentina
 
-Monitor Dell
+Partida Brasil x França
 
-* Dell Brasil
-* Kabum
+* Brasil
+* França
 
 ---
 
@@ -162,21 +176,21 @@ Monitor Dell
 Tabelas criadas:
 
 ```text
-categorias
-produtos
-fornecedores
-produto_fornecedor
+selecoes
+jogadores
+partidas
+partida_selecao
 ```
 
 Relacionamentos:
 
 ```text
-categorias (1) -------- (N) produtos
+selecoes (1) -------- (N) jogadores
 
-produtos (N) -------- (N) fornecedores
+partidas (N) -------- (N) selecoes
                |
                |
-       produto_fornecedor
+         partida_selecao
 ```
 
 O banco de dados MySQL está hospedado na plataforma Clever Cloud e é acessado pela aplicação através de JDBC.
@@ -201,10 +215,10 @@ Responsável pelos endpoints REST.
 
 Exemplos:
 
-* CategoriaController
-* ProdutoController
-* FornecedorController
-* ProdutoFornecedorController
+* SelecaoController
+* JogadorController
+* PartidaController
+* PartidaSelecaoController
 
 ---
 
@@ -214,10 +228,10 @@ Responsável pelo acesso ao banco de dados utilizando JDBC.
 
 Exemplos:
 
-* CategoriaDao
-* ProdutoDao
-* FornecedorDao
-* ProdutoFornecedorDao
+* SelecaoDao
+* JogadorDao
+* PartidaDao
+* PartidaSelecaoDao
 
 ---
 
@@ -227,16 +241,16 @@ Representação das entidades de domínio.
 
 Exemplos:
 
-* Categoria
-* Produto
-* Fornecedor
-* ProdutoFornecedor
+* Selecao
+* Jogador
+* Partida
+* PartidaSelecao
 
 ---
 
 ## Config
 
-Configurações da aplicação.
+Responsável pelas configurações da aplicação.
 
 Exemplo:
 
@@ -266,7 +280,7 @@ Conexao
 
 Objetivo:
 
-Garantir uma única instância de conexão com o banco de dados durante a execução da aplicação.
+Garantir uma única instância de conexão com o banco de dados durante toda a execução da aplicação.
 
 Benefícios:
 
@@ -286,19 +300,19 @@ DaoFactory
 
 Objetivo:
 
-Centralizar a criação dos objetos DAO.
+Centralizar a criação dos objetos DAO da aplicação.
 
 Exemplo:
 
 ```java
-DaoFactory.criarDao(CategoriaDao.class)
+DaoFactory.criarDao(SelecaoDao.class)
 ```
 
 Benefícios:
 
 * Baixo acoplamento
-* Maior flexibilidade
 * Facilidade de manutenção
+* Flexibilidade para expansão futura
 
 ---
 
@@ -309,9 +323,12 @@ Durante o desenvolvimento foram aplicados conceitos de:
 ## Clean Code
 
 * Nomes descritivos
-* Métodos pequenos
-* Separação de responsabilidades
-* Organização em camadas
+* Métodos pequenos e objetivos
+* Baixa duplicação de código
+* Organização por responsabilidade
+* Separação em camadas
+
+---
 
 ## SOLID
 
@@ -319,15 +336,17 @@ Durante o desenvolvimento foram aplicados conceitos de:
 
 Cada classe possui apenas uma responsabilidade.
 
-Exemplo:
+Exemplos:
 
 * Controller → Requisições HTTP
-* DAO → Banco de Dados
-* Model → Dados
+* DAO → Persistência de dados
+* Model → Representação das entidades
+
+---
 
 ### Open/Closed Principle (OCP)
 
-A utilização da Factory permite adicionar novos DAOs sem alterar a estrutura principal da aplicação.
+A utilização da Factory permite adicionar novos DAOs sem modificar a estrutura principal da aplicação.
 
 ---
 
@@ -341,91 +360,73 @@ Ambiente local:
 http://localhost:8080/swagger-ui/index.html
 ```
 
-Ambiente em produção:
-
-```text
-https://tap-ap2-b5iy.onrender.com/swagger-ui/index.html
-```
-
 Através do Swagger é possível:
 
 * Visualizar endpoints
 * Testar requisições
-* Enviar parâmetros
-* Consultar respostas
-* Validar o funcionamento da API sem ferramentas externas
+* Consultar parâmetros
+* Validar respostas
+* Realizar testes diretamente pelo navegador
 
 ---
 
 # Deploy em Nuvem
 
-Como requisito bônus da atividade, a API foi disponibilizada em ambiente de nuvem utilizando a plataforma Render.
+Como requisito bônus da atividade, a API pode ser disponibilizada em ambiente de nuvem utilizando a plataforma Render.
 
 Infraestrutura utilizada:
 
 * Aplicação Spring Boot hospedada no Render
-* Banco de dados MySQL hospedado no Clever Cloud
-* Comunicação entre aplicação e banco realizada via JDBC
-
-URL da aplicação:
-
-```text
-https://tap-ap2-b5iy.onrender.com
-```
-
-Swagger em produção:
-
-```text
-https://tap-ap2-b5iy.onrender.com/swagger-ui/index.html
-```
+* Banco MySQL hospedado no Clever Cloud
+* Comunicação realizada via JDBC
 
 ---
 
 # Endpoints Disponíveis
 
-## Categorias
+## Seleções
 
 ```text
-GET    /api/categorias
-GET    /api/categorias/{id}
-POST   /api/categorias
-PUT    /api/categorias/{id}
-DELETE /api/categorias/{id}
+GET    /api/selecoes
+GET    /api/selecoes/{id}
+POST   /api/selecoes
+PUT    /api/selecoes/{id}
+DELETE /api/selecoes/{id}
 ```
 
 ---
 
-## Produtos
+## Jogadores
 
 ```text
-GET    /api/produtos
-GET    /api/produtos/{id}
-POST   /api/produtos
-PUT    /api/produtos/{id}
-DELETE /api/produtos/{id}
+GET    /api/jogadores
+GET    /api/jogadores/{id}
+POST   /api/jogadores
+PUT    /api/jogadores/{id}
+DELETE /api/jogadores/{id}
 ```
 
 ---
 
-## Fornecedores
+## Partidas
 
 ```text
-GET    /api/fornecedores
-GET    /api/fornecedores/{id}
-POST   /api/fornecedores
-PUT    /api/fornecedores/{id}
-DELETE /api/fornecedores/{id}
+GET    /api/partidas
+GET    /api/partidas/{id}
+POST   /api/partidas
+PUT    /api/partidas/{id}
+DELETE /api/partidas/{id}
 ```
 
 ---
 
-## ProdutoFornecedor
+## PartidaSelecao
 
 ```text
-GET    /api/produto-fornecedor
-GET    /api/produto-fornecedor/produto/{produtoId}
-POST   /api/produto-fornecedor
-DELETE /api/produto-fornecedor/{produtoId}/{fornecedorId}
+GET    /api/partida-selecao
+GET    /api/partida-selecao/partida/{partidaId}
+POST   /api/partida-selecao
+DELETE /api/partida-selecao/{partidaId}/{selecaoId}
 ```
 
 ---
@@ -461,3 +462,29 @@ http://localhost:8080/swagger-ui/index.html
 ```
 
 ---
+
+# Requisitos do Trabalho Atendidos
+
+✅ API REST CRUD
+
+✅ Três entidades de domínio
+
+✅ Relacionamento 1:N
+
+✅ Relacionamento N:N
+
+✅ Banco de dados relacional
+
+✅ Spring Boot
+
+✅ Swagger/OpenAPI
+
+✅ Design Patterns (Singleton e Factory Method)
+
+✅ Aplicação de princípios de Clean Code
+
+✅ Aplicação de princípios SOLID
+
+✅ Deploy em nuvem (Render)
+
+✅ Banco de dados em nuvem (Clever Cloud)

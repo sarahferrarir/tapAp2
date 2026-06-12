@@ -1,7 +1,7 @@
 package com.example.tapAp2.dao;
 
 import com.example.tapAp2.config.Conexao;
-import com.example.tapAp2.model.ProdutoFornecedor;
+import com.example.tapAp2.model.PartidaSelecao;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,13 +12,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> {
+public class PartidaSelecaoDao implements CrudDao<PartidaSelecao, String> {
 
     @Override
-    public void inserir(ProdutoFornecedor produtoFornecedor) {
+    public void inserir(PartidaSelecao partidaSelecao) {
 
         String sql =
-                "INSERT INTO produto_fornecedor(produto_id, fornecedor_id) VALUES (?, ?)";
+                "INSERT INTO partida_selecao(partida_id, selecao_id) VALUES (?, ?)";
 
         try {
 
@@ -28,8 +28,8 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
             PreparedStatement stmt =
                     conexao.prepareStatement(sql);
 
-            stmt.setLong(1, produtoFornecedor.getProdutoId());
-            stmt.setLong(2, produtoFornecedor.getFornecedorId());
+            stmt.setLong(1, partidaSelecao.getPartidaId());
+            stmt.setLong(2, partidaSelecao.getSelecaoId());
 
             stmt.executeUpdate();
 
@@ -39,19 +39,19 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
     }
 
     @Override
-    public ProdutoFornecedor buscarPorId(String id) {
+    public PartidaSelecao buscarPorId(String id) {
         throw new UnsupportedOperationException(
-                "Use buscarPorProduto(produtoId)"
+                "Use buscarPorPartida(partidaId)"
         );
     }
 
     @Override
-    public List<ProdutoFornecedor> listarTodos() {
+    public List<PartidaSelecao> listarTodos() {
 
         String sql =
-                "SELECT * FROM produto_fornecedor";
+                "SELECT * FROM partida_selecao";
 
-        List<ProdutoFornecedor> lista =
+        List<PartidaSelecao> lista =
                 new ArrayList<>();
 
         try {
@@ -67,13 +67,13 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
 
             while (rs.next()) {
 
-                ProdutoFornecedor pf =
-                        new ProdutoFornecedor(
-                                rs.getLong("produto_id"),
-                                rs.getLong("fornecedor_id")
+                PartidaSelecao ps =
+                        new PartidaSelecao(
+                                rs.getLong("partida_id"),
+                                rs.getLong("selecao_id")
                         );
 
-                lista.add(pf);
+                lista.add(ps);
             }
 
             return lista;
@@ -84,7 +84,7 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
     }
 
     @Override
-    public void atualizar(ProdutoFornecedor produtoFornecedor) {
+    public void atualizar(PartidaSelecao partidaSelecao) {
         throw new UnsupportedOperationException(
                 "Atualização não suportada para tabela de associação"
         );
@@ -93,14 +93,14 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
     @Override
     public void deletar(String id) {
         throw new UnsupportedOperationException(
-                "Use deletar(produtoId, fornecedorId)"
+                "Use deletar(partidaId, selecaoId)"
         );
     }
 
-    public void deletar(Long produtoId, Long fornecedorId) {
+    public void deletar(Long partidaId, Long selecaoId) {
 
         String sql =
-                "DELETE FROM produto_fornecedor WHERE produto_id = ? AND fornecedor_id = ?";
+                "DELETE FROM partida_selecao WHERE partida_id = ? AND selecao_id = ?";
 
         try {
 
@@ -110,8 +110,8 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
             PreparedStatement stmt =
                     conexao.prepareStatement(sql);
 
-            stmt.setLong(1, produtoId);
-            stmt.setLong(2, fornecedorId);
+            stmt.setLong(1, partidaId);
+            stmt.setLong(2, selecaoId);
 
             int linhasAfetadas =
                     stmt.executeUpdate();
@@ -120,10 +120,10 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
 
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Vínculo entre produto "
-                                + produtoId +
-                                " e fornecedor "
-                                + fornecedorId +
+                        "Vínculo entre partida "
+                                + partidaId +
+                                " e seleção "
+                                + selecaoId +
                                 " não encontrado."
                 );
             }
@@ -133,12 +133,12 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
         }
     }
 
-    public List<ProdutoFornecedor> buscarPorProduto(Long produtoId) {
+    public List<PartidaSelecao> buscarPorPartida(Long partidaId) {
 
         String sql =
-                "SELECT * FROM produto_fornecedor WHERE produto_id = ?";
+                "SELECT * FROM partida_selecao WHERE partida_id = ?";
 
-        List<ProdutoFornecedor> lista =
+        List<PartidaSelecao> lista =
                 new ArrayList<>();
 
         try {
@@ -149,28 +149,28 @@ public class ProdutoFornecedorDao implements CrudDao<ProdutoFornecedor, String> 
             PreparedStatement stmt =
                     conexao.prepareStatement(sql);
 
-            stmt.setLong(1, produtoId);
+            stmt.setLong(1, partidaId);
 
             ResultSet rs =
                     stmt.executeQuery();
 
             while (rs.next()) {
 
-                ProdutoFornecedor pf =
-                        new ProdutoFornecedor(
-                                rs.getLong("produto_id"),
-                                rs.getLong("fornecedor_id")
+                PartidaSelecao ps =
+                        new PartidaSelecao(
+                                rs.getLong("partida_id"),
+                                rs.getLong("selecao_id")
                         );
 
-                lista.add(pf);
+                lista.add(ps);
             }
 
             if (lista.isEmpty()) {
 
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Nenhum fornecedor encontrado para o produto "
-                                + produtoId
+                        "Nenhuma seleção encontrada para a partida "
+                                + partidaId
                 );
             }
 

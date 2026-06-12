@@ -1,7 +1,7 @@
 package com.example.tapAp2.dao;
 
 import com.example.tapAp2.config.Conexao;
-import com.example.tapAp2.model.Produto;
+import com.example.tapAp2.model.Jogador;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -12,13 +12,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProdutoDao implements CrudDao<Produto, Long> {
+public class JogadorDao implements CrudDao<Jogador, Long> {
 
     @Override
-    public void inserir(Produto produto) {
+    public void inserir(Jogador jogador) {
 
         String sql =
-                "INSERT INTO produtos(nome, preco, categoria_id) VALUES (?, ?, ?)";
+                "INSERT INTO jogadores(nome, numero_camisa, posicao, idade, selecao_id) VALUES (?, ?, ?, ?, ?)";
 
         try {
 
@@ -27,22 +27,24 @@ public class ProdutoDao implements CrudDao<Produto, Long> {
             PreparedStatement stmt =
                     conexao.prepareStatement(sql);
 
-            stmt.setString(1, produto.getNome());
-            stmt.setDouble(2, produto.getPreco());
-            stmt.setLong(3, produto.getCategoriaId());
+            stmt.setString(1, jogador.getNome());
+            stmt.setInt(2, jogador.getNumeroCamisa());
+            stmt.setString(3, jogador.getPosicao());
+            stmt.setInt(4, jogador.getIdade());
+            stmt.setLong(5, jogador.getSelecaoId());
 
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao inserir produto", e);
+            throw new RuntimeException("Erro ao inserir jogador", e);
         }
     }
 
     @Override
-    public Produto buscarPorId(Long id) {
+    public Jogador buscarPorId(Long id) {
 
         String sql =
-                "SELECT * FROM produtos WHERE id = ?";
+                "SELECT * FROM jogadores WHERE id = ?";
 
         try {
 
@@ -57,31 +59,33 @@ public class ProdutoDao implements CrudDao<Produto, Long> {
 
             if (rs.next()) {
 
-                return new Produto(
+                return new Jogador(
                         rs.getLong("id"),
                         rs.getString("nome"),
-                        rs.getDouble("preco"),
-                        rs.getLong("categoria_id")
+                        rs.getInt("numero_camisa"),
+                        rs.getString("posicao"),
+                        rs.getInt("idade"),
+                        rs.getLong("selecao_id")
                 );
             }
 
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND,
-                    "Produto com ID " + id + " não encontrado."
+                    "Jogador com ID " + id + " não encontrado."
             );
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar produto", e);
+            throw new RuntimeException("Erro ao buscar jogador", e);
         }
     }
 
     @Override
-    public List<Produto> listarTodos() {
+    public List<Jogador> listarTodos() {
 
         String sql =
-                "SELECT * FROM produtos";
+                "SELECT * FROM jogadores";
 
-        List<Produto> produtos =
+        List<Jogador> jogadores =
                 new ArrayList<>();
 
         try {
@@ -95,29 +99,31 @@ public class ProdutoDao implements CrudDao<Produto, Long> {
 
             while (rs.next()) {
 
-                Produto produto =
-                        new Produto(
+                Jogador jogador =
+                        new Jogador(
                                 rs.getLong("id"),
                                 rs.getString("nome"),
-                                rs.getDouble("preco"),
-                                rs.getLong("categoria_id")
+                                rs.getInt("numero_camisa"),
+                                rs.getString("posicao"),
+                                rs.getInt("idade"),
+                                rs.getLong("selecao_id")
                         );
 
-                produtos.add(produto);
+                jogadores.add(jogador);
             }
 
-            return produtos;
+            return jogadores;
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar produtos", e);
+            throw new RuntimeException("Erro ao listar jogadores", e);
         }
     }
 
     @Override
-    public void atualizar(Produto produto) {
+    public void atualizar(Jogador jogador) {
 
         String sql =
-                "UPDATE produtos SET nome = ?, preco = ?, categoria_id = ? WHERE id = ?";
+                "UPDATE jogadores SET nome = ?, numero_camisa = ?, posicao = ?, idade = ?, selecao_id = ? WHERE id = ?";
 
         try {
 
@@ -126,10 +132,12 @@ public class ProdutoDao implements CrudDao<Produto, Long> {
             PreparedStatement stmt =
                     conexao.prepareStatement(sql);
 
-            stmt.setString(1, produto.getNome());
-            stmt.setDouble(2, produto.getPreco());
-            stmt.setLong(3, produto.getCategoriaId());
-            stmt.setLong(4, produto.getId());
+            stmt.setString(1, jogador.getNome());
+            stmt.setInt(2, jogador.getNumeroCamisa());
+            stmt.setString(3, jogador.getPosicao());
+            stmt.setInt(4, jogador.getIdade());
+            stmt.setLong(5, jogador.getSelecaoId());
+            stmt.setLong(6, jogador.getId());
 
             int linhasAfetadas =
                     stmt.executeUpdate();
@@ -138,12 +146,12 @@ public class ProdutoDao implements CrudDao<Produto, Long> {
 
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Produto com ID " + produto.getId() + " não encontrado."
+                        "Jogador com ID " + jogador.getId() + " não encontrado."
                 );
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar produto", e);
+            throw new RuntimeException("Erro ao atualizar jogador", e);
         }
     }
 
@@ -151,7 +159,7 @@ public class ProdutoDao implements CrudDao<Produto, Long> {
     public void deletar(Long id) {
 
         String sql =
-                "DELETE FROM produtos WHERE id = ?";
+                "DELETE FROM jogadores WHERE id = ?";
 
         try {
 
@@ -169,12 +177,12 @@ public class ProdutoDao implements CrudDao<Produto, Long> {
 
                 throw new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
-                        "Produto com ID " + id + " não encontrado."
+                        "Jogador com ID " + id + " não encontrado."
                 );
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao deletar produto", e);
+            throw new RuntimeException("Erro ao deletar jogador", e);
         }
     }
 }
